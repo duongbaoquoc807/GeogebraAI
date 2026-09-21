@@ -1,0 +1,5 @@
+{
+  "name": "AI Geometry Studio",
+  "description": "Hệ thống AI tự động phân tích đề bài toán hình học, dựng hình 2D/3D trên GeoGebra, xuất PNG/LaTeX TikZ",
+  "version": "2.0.0"
+}
