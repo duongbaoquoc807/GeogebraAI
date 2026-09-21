@@ -1,6 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { Type, Schema } from '@google/genai';
-import { callWithFallback, AiProvider, parseApiError } from '../lib/ai-client';
+import { callWithFallback, AiProvider, parseApiError } from './_lib/ai-client';
 
 export const config = {
   api: {

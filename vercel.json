@@ -3,8 +3,7 @@
   "outputDirectory": "dist",
   "functions": {
     "api/*.ts": {
-      "maxDuration": 60,
-      "includeFiles": "lib/**"
+      "maxDuration": 60
     }
   },
   "rewrites": [
