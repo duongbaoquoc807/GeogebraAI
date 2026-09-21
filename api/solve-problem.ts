@@ -9,7 +9,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   const apiKey = req.headers['x-api-key'] as string;
   const provider = (req.headers['x-ai-provider'] as AiProvider) || 'gemini';
-  const model = req.headers['x-ai-model'] as string;
+  const selectedModel = (req.headers['x-ai-model'] as string) || 'gemini-3.6-flash';
 
   if (!apiKey) {
     return res.status(401).json({ success: false, error: 'Missing API Key' });
@@ -58,25 +58,27 @@ ${problemText || 'Không có đề bài.'}
 Dữ liệu hình học:
 ${JSON.stringify(geometryData || {}, null, 2)}`;
 
-    const result = await callWithFallback(prompt, {
+    const result = await callWithFallback({
       apiKey,
       provider,
-      model,
+      selectedModel,
+      contents: { parts: [{ text: prompt }] },
       systemInstruction,
       responseSchema,
     });
 
     let parsedResult;
     try {
-      parsedResult = typeof result === 'string' ? JSON.parse(result) : result;
-    } catch (e) {
-      parsedResult = result;
+      parsedResult = JSON.parse(result.text || '{}');
+    } catch {
+      parsedResult = { solution_text: result.text, steps: [], answer: result.text };
     }
 
     return res.status(200).json({ success: true, data: parsedResult });
   } catch (error: any) {
     console.error('Solve problem error:', error);
-    const { status, message } = parseApiError(error);
-    return res.status(status).json({ success: false, error: message });
+    const errorType = parseApiError(error);
+    const statusCode = errorType === 'AUTH_ERROR' ? 401 : errorType === 'INVALID_REQUEST' ? 400 : 500;
+    return res.status(statusCode).json({ success: false, error: error.message || 'Lỗi hệ thống', errorType });
   }
 }
