@@ -11,7 +11,7 @@ import ApiKeyModal from './components/ApiKeyModal';
 import { SolutionSection } from './components/SolutionSection';
 import TemplateLibrary from './components/TemplateLibrary';
 import HistoryPanel from './components/HistoryPanel';
-import { CheckCircle, Loader2, AlertCircle, MinusCircle, History } from 'lucide-react';
+import { CheckCircle, Loader2, AlertCircle, MinusCircle, History, Compass } from 'lucide-react';
 
 const INITIAL_STEPS: StepState[] = [
   { status: 'pending', label: 'Phân tích AI' },
@@ -315,6 +315,26 @@ export default function App() {
           </>
         )}
       </main>
+
+      {/* Footer */}
+      <footer className="mt-16 border-t border-slate-200 bg-white">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-6">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
+            <div className="flex items-center gap-2 text-slate-500">
+              <Compass className="w-5 h-5 text-indigo-500" />
+              <span className="font-semibold text-slate-700">AI Geometry Studio</span>
+            </div>
+            <div className="text-center sm:text-right">
+              <p className="text-sm text-slate-600 font-medium">
+                © {new Date().getFullYear()} Thầy Dương Bảo Quốc
+              </p>
+              <p className="text-xs text-slate-400 mt-0.5">
+                Tổ Toán - Tin &bull; Trường THCS & THPT Khánh Lâm
+              </p>
+            </div>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }

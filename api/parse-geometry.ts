@@ -2,23 +2,31 @@ import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { Type, Schema } from '@google/genai';
 import { callWithFallback, AiProvider, parseApiError } from '../lib/ai-client';
 
+export const config = {
+  api: {
+    bodyParser: {
+      sizeLimit: '10mb',
+    },
+  },
+};
+
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'POST') {
     return res.status(405).json({ success: false, error: 'Method not allowed' });
   }
 
-  const apiKeyHeader = req.headers['x-api-key'] as string;
-  const aiProviderHeader = (req.headers['x-ai-provider'] as AiProvider) || 'gemini';
-  const aiModelHeader = (req.headers['x-ai-model'] as string) || 'gemini-3.6-flash';
-
-  const apiKey = apiKeyHeader || process.env.GEMINI_API_KEY;
-
-  if (!apiKey) {
-    return res.status(401).json({ success: false, error: 'Unauthorized: API Key is missing' });
-  }
-
   try {
-    const { text, imageBase64 } = req.body;
+    const apiKeyHeader = req.headers['x-api-key'] as string;
+    const aiProviderHeader = (req.headers['x-ai-provider'] as AiProvider) || 'gemini';
+    const aiModelHeader = (req.headers['x-ai-model'] as string) || 'gemini-3.6-flash';
+
+    const apiKey = apiKeyHeader || process.env.GEMINI_API_KEY;
+
+    if (!apiKey) {
+      return res.status(401).json({ success: false, error: 'Vui lòng cấu hình API Key trước khi sử dụng.' });
+    }
+
+    const { text, imageBase64 } = req.body || {};
 
     let parts: any[] = [];
     if (text) {
@@ -156,11 +164,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       fallbackUsed: result.fallbackUsed
     });
   } catch (error: any) {
+    console.error("Parse geometry error:", error?.message || error);
     const errorType = parseApiError(error);
     const statusCode = errorType === 'AUTH_ERROR' ? 401 : errorType === 'INVALID_REQUEST' ? 400 : 500;
     return res.status(statusCode).json({
       success: false,
-      error: error.message || 'Lỗi hệ thống',
+      error: error?.message || 'Lỗi hệ thống không xác định',
       errorType
     });
   }
