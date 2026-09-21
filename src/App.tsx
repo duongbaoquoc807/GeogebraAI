@@ -8,7 +8,7 @@ import { ReviewSection } from './components/ReviewSection';
 import { RenderSection } from './components/RenderSection';
 import Header from './components/Header';
 import ApiKeyModal from './components/ApiKeyModal';
-import SolutionSection from './components/SolutionSection';
+import { SolutionSection } from './components/SolutionSection';
 import TemplateLibrary from './components/TemplateLibrary';
 import HistoryPanel from './components/HistoryPanel';
 import { CheckCircle, Loader2, AlertCircle, MinusCircle, History } from 'lucide-react';
